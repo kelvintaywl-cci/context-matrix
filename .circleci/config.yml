@@ -12,6 +12,8 @@ jobs:
     steps:
       - checkout
       - run: |
+          printenv << parameters.ctx >>
+      - run: |
           curl -X GET "http://quotes.rest/qod?language=en" | jq ".contents.quotes[0]"
 
 workflows:
