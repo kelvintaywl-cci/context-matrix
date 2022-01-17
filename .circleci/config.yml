@@ -4,24 +4,51 @@ jobs:
   quote:
     docker:
       - image: cimg/base:stable
+    resource_class: small
     parameters:
       ctx:
         type: string
         default: ''
-        description: 'placeholder/hack; do not set'
+        description: 'placeholder/hack for single context; do not set'
+      ctx1:
+        type: string
+        default: ''
+        description: 'placeholder/hack for context #1 in multi-context; do not set'
+      ctx2:
+        type: string
+        default: ''
+        description: 'placeholder/hack for context #2 in multi-context; do not set'
     steps:
       - checkout
       - run: |
           echo "TODO: random quote"
 
 workflows:
-  explore:
+  explore-single-context:
     jobs:
       - quote:
+          # This workaround is limited to single-context injection only;
+          # It breaks down, or becomes more complicated if you need multiple contexxts injected.
           context: << matrix.ctx >>
           matrix:
             parameters:
               ctx:
                 - "test-2"
+                - "test-3"
+                - "test-4"
+  explore-multi-context:
+    jobs:
+      - quote:
+          # Multi-context scenarios:
+          # - [test-2, test-3]
+          # - [test-2, test-4]
+          context:
+            - << matrix.ctx1 >>
+            - << matrix.ctx2 >>
+          matrix:
+            parameters:
+              ctx1:
+                - "test-2"
+              ctx2:
                 - "test-3"
                 - "test-4"
