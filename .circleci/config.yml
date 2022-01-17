@@ -1,0 +1,27 @@
+version: 2.1
+
+jobs:
+  quote:
+    docker:
+      - image: cimg/base:stable
+    parameters:
+      ctx:
+        type: string
+        default: ''
+        description: 'placeholder/hack; do not set'
+    steps:
+      - checkout
+      - run: |
+          curl -X GET "http://quotes.rest/qod?language=en" | jq ".contents.quotes[0]"
+
+workflows:
+  explore:
+    jobs:
+      - quote:
+          context: << matrix.ctx >>
+          matrix:
+            parameters:
+              ctx:
+                - "test-2"
+                - "test-3"
+                - "test-4"
